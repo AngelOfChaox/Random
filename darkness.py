@@ -1,12 +1,30 @@
 import sys
+import argparse
+
+parser = argparse.ArgumentParser(description='Calculate Darkness needed for Unseen One')
+parser.add_argument('position', type=str, help="Current rank in Hades")
+parser.add_argument('--gain', type=int, help="Average darkness gained per run")
+parser.add_argument('--time', type=int, help="Average time it takes per run in minutes")
+parser.add_argument('--current', type=int, help="Current darkness you are at in rank")
+args = parser.parse_args()
 
 darkness_required = 0
-avg_gain = 660
-darkness = 1000
-avg_minutes = 12
+darkness = 0
+base_darkness = 1000
 
-current_rank = sys.argv[1]
-current_darkness = sys.argv[2]
+current_rank = args.position
+if args.gain:
+    avg_gain = args.gain
+else:
+    avg_gain = 660
+if args.time:
+    avg_minutes = args.time
+else:
+    avg_minutes = 12
+if args.current:
+    current_darkness = args.current
+else:
+    current_darkness = 0
 
 darkness_total = {}
 
@@ -16,10 +34,10 @@ titles = ['Warden', 'Fixer', 'Agent', 'Cleaner', 'Shadow', 'Dusk', 'Wraith', 'Ov
 for t in titles:
     for r in ranks:
         position = f'{r} {t}'
-        if r is 'Alpha' and t is not 'Warden':
+        if r is 'Alpha' and t is 'Warden':
+            darkness = base_darkness
+        elif r is 'Alpha' and t is not 'Warden':
             darkness -= 1000
-        elif r is 'Alpha' and t is 'Warden':
-            darkness = darkness
         else:
             darkness += 500
         darkness_total[position] = darkness
